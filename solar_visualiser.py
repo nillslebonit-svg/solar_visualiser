@@ -11,12 +11,23 @@ st.subheader("Translating the Sun's mood for Earthlings")
 # 1. Fetch Real-Time X-Ray Flux (Solar Flares)
 @st.cache_data(ttl=60)
 def fetch_solar_data():
-    url = "https://services.swpc.noaa.gov/json/goes/primary/xrays-1-minute.json"
-    data = requests.get(url).json()
-    df = pd.DataFrame(data)
-    # Filter for the 0.1-0.8nm wavelength (standard for flare class)
-    df = df[df['energy'] == '0.1-0.8nm'].tail(60) # Last 60 mins
-    return df
+    # Use the verified 2025 URL from your directory screenshot
+    url = "https://services.swpc.noaa.gov/json/goes/primary/xrays-7-day.json"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        df = pd.DataFrame(data)
+        
+        # In the 7-day file, we still want to filter for the 0.1-0.8nm wavelength
+        # and grab the last hour of data
+        df = df[df['energy'] == '0.1-0.8nm'].tail(60)
+        return df
+        
+    except Exception as e:
+        st.error(f"Translation Error: {e}")
+        return pd.DataFrame()
 
 data = fetch_solar_data()
 latest_flux = data.iloc[-1]['flux']
