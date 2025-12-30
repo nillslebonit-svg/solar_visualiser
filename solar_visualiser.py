@@ -101,4 +101,4 @@ if not raw_data.empty:
     st.info("💡 **Chief Translator Note:** X-Class flares can disrupt GPS and power grids. M-Class flares cause brief radio blackouts. C-Class flares are basically just the Sun sneezing.")
 
 else:
-    st.error("Could not retrieve data.
+    st.error("Could not retrieve data.The Sun is either asleep or the API is down.")
